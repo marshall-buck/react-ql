@@ -1,7 +1,9 @@
 import React from 'react';
-import { UserApiInterface } from './types';
+import { UserInterface } from './types';
 import './App.css';
-import  User  from './User'
+import User from './User';
+import { Route, Routes } from "react-router-dom"
+import MessageList from './MessageList';
 
 import { useQuery, gql } from '@apollo/client';
 
@@ -12,36 +14,36 @@ const ALL_USERS = gql`
              username
             first_name
             last_name
-            messages {
-              body
-            }
-
           }
         }
-      `
-// const USER_MESSAGES = gql`
-//         query {user(username: { [username: string]: any }){messages {body}}}
-//       `
+      `;
+
+
 
 /** Main App, Loads all users
  *
- * App -> User
+ * App ->
+ *  User
+ *  Routes ->Messages, UserForm, MessageForm
  */
 function App() {
-  const { loading, error, data } = useQuery(ALL_USERS);
+  const { loading, error, data } = useQuery<UserInterface[]>(ALL_USERS);
 
+  console.log(data)
+  if (loading) return <p>Loading...</p>;
 
-
-    if (loading) return <p>Loading...</p>;
-
-    if (error) return <p>Error :(</p>;
+  if (error) return <p>Error :(</p>;
 
   return (
     <div className="App">
-      { data.users.map((user: UserApiInterface) => <User username={user.username}
-       firstName={user.first_name}/>)}
+      <Routes>
+        <Route path="/" element= {<User users = {data.users} />} />
+        <Route path="/:username/messages" element= {<MessageList />} />
+      </Routes>
     </div>
   );
 }
 
 export default App;
+// {/* <Route path="/addUser" element= {<UserForm />} />
+// <Route path="/:username/addMessage" element= {<MessageForm />} /> */}

@@ -1,21 +1,24 @@
 
+import { Link } from 'react-router-dom';
+import { UserApiInterface, UserPropsInterface } from './types';
 
-import {UserPropsInterface} from './types'
 
-
-function User({username, firstName, lastName} :UserPropsInterface) {
-
+function User({ users }: UserApiInterface[] | undefined) {
 
 
     return (
         <div>
+            {users.map((user: UserApiInterface) =>
+                <>
+                    <p>{user.username}</p>
+                    <p>{user.first_name} {user.last_name}</p>
+                    <Link to={`/${user.username}/messages`}> Get Messages </Link>
+                </>
+            )
+            }
 
-            <p>{username}</p>
-            <p>{firstName} {lastName}</p>
-
-
-        </div>    )
+        </div>);
 }
 
 
-export default User
+export default User;
