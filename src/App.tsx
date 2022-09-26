@@ -1,24 +1,45 @@
 import React from 'react';
-import logo from './logo.svg';
+import { UserApiInterface } from './types';
 import './App.css';
+import  User  from './User'
 
+import { useQuery, gql } from '@apollo/client';
+
+
+const ALL_USERS = gql`
+        query {
+          users {
+             username
+            first_name
+            last_name
+            messages {
+              body
+            }
+
+          }
+        }
+      `
+// const USER_MESSAGES = gql`
+//         query {user(username: { [username: string]: any }){messages {body}}}
+//       `
+
+/** Main App, Loads all users
+ *
+ * App -> User
+ */
 function App() {
+  const { loading, error, data } = useQuery(ALL_USERS);
+
+
+
+    if (loading) return <p>Loading...</p>;
+
+    if (error) return <p>Error :(</p>;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      { data.users.map((user: UserApiInterface) => <User username={user.username}
+       firstName={user.first_name}/>)}
     </div>
   );
 }
