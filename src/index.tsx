@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,31 +15,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-// const client = ...
 
-// client
-//   .query({
-//     query: gql`
-//       query {
-//         users {
-//            username
-//           first_name
-//           last_name
-//           messages {
-//             body
-//           }
-
-//         }
-//       }
-//     `,
-//   })
-//   .then((result) => console.log(result));
 
 root.render(
   <React.StrictMode>
+    <BrowserRouter>
     <ApolloProvider client={client}>
     <App />
     </ApolloProvider>
+    </BrowserRouter>
+
   </React.StrictMode>
 );
 

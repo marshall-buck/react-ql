@@ -1,24 +1,26 @@
 
 import { Link } from 'react-router-dom';
-import { UserApiInterface, UserPropsInterface } from './types';
+import {GetAllUsersQuery} from './graphql/generated'
 
 
-function User({ users }: UserApiInterface[] | undefined) {
+function UserList({ users }: GetAllUsersQuery) {
 
-
-    return (
+    if (users) return (
         <div>
-            {users.map((user: UserApiInterface) =>
-                <>
-                    <p>{user.username}</p>
+            {users.map((user) =>
+                <div key={user.username}>
+                    <p >{user.username}</p>
                     <p>{user.first_name} {user.last_name}</p>
                     <Link to={`/${user.username}/messages`}> Get Messages </Link>
-                </>
+                </div>
             )
             }
 
         </div>);
+        else return (
+            <div> "no users" ;</div>
+        )
 }
 
 
-export default User;
+export default UserList

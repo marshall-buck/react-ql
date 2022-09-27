@@ -93,7 +93,7 @@ export type SubscriptionMessageAddedArgs = {
   username: Scalars['ID'];
 };
 
-export type UserInterface = {
+export type User = {
   __typename?: 'User';
   username: Scalars['ID'];
   first_name: Scalars['String'];
@@ -112,6 +112,11 @@ export enum CacheControlScope {
   Public = 'PUBLIC',
   Private = 'PRIVATE'
 }
+
+export type UserData = {
+  users: User[] ;
+}
+
 
 
 

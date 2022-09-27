@@ -1,15 +1,11 @@
-import { useQuery, gql } from '@apollo/client';
+import {useGetUserMessagesQuery} from "./graphql/generated"
 import { useParams } from 'react-router-dom';
-import { MessageApiInterface } from './types';
-
 
 function MessageList() {
     const { username } = useParams();
 
-    const USER_MESSAGES = gql`
-            query{user(username:${username}){messages{body}}}
-          `;
-    const { loading, error, data } = useQuery(USER_MESSAGES);
+
+    const { loading, error, data } = useGetUserMessagesQuery({ variables: { username: "00" } });
 
 
     if (loading) return <p>Loading...</p>;
@@ -18,10 +14,10 @@ function MessageList() {
 
 
     return (
-        <div className="App">
-            {data.user.messages.map((message: MessageApiInterface) =>
-                <p>message.body</p>
-            )}
+        <div >
+           <h2>{username} Messages</h2>
+           {data && data?.user?.messages?.map(message => <p>{message.body}</p>  )}
+
         </div>
     );
 
