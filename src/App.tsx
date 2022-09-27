@@ -2,14 +2,10 @@
 
 import './App.css';
 import UserList from './User';
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, Link } from "react-router-dom"
 import MessageList from './MessageList';
+import AddMessage from './AddMessage'
 import {useGetAllUsersQuery} from "./graphql/generated"
-
-
-
-
-
 
 
 /** Main App, Loads all users
@@ -30,6 +26,10 @@ function App() {
 
   return (
     <div className="App">
+      <nav><Link to={'/add-user'}>Add User</Link>
+
+
+      </nav>
 
 
       <Routes>
