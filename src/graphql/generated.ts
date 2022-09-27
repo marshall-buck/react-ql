@@ -119,7 +119,14 @@ export type CreateMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Message', body: string, user: { __typename?: 'User', username: string } } };
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Message', body: string, id: string } };
+
+export type MessageAddedSubscriptionVariables = Exact<{
+  username: Scalars['ID'];
+}>;
+
+
+export type MessageAddedSubscription = { __typename?: 'Subscription', messageAdded?: { __typename?: 'Message', body: string } | null };
 
 
 export const GetAllUsersDocument = gql`
@@ -236,9 +243,7 @@ export const CreateMessageDocument = gql`
     mutation createMessage($username: ID!, $body: String!) {
   createMessage(username: $username, body: $body) {
     body
-    user {
-      username
-    }
+    id
   }
 }
     `;
@@ -247,8 +252,7 @@ export type CreateMessageMutationFn = Apollo.MutationFunction<CreateMessageMutat
 /**
  * __useCreateMessageMutation__
  *
- * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that
- * fit your needs.
+ * To run a mutation, you first call `useCreateMessageMutation` within a React component and pass it any options that fit your needs.
  * When your component renders, `useCreateMessageMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
@@ -270,3 +274,33 @@ export function useCreateMessageMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateMessageMutationHookResult = ReturnType<typeof useCreateMessageMutation>;
 export type CreateMessageMutationResult = Apollo.MutationResult<CreateMessageMutation>;
 export type CreateMessageMutationOptions = Apollo.BaseMutationOptions<CreateMessageMutation, CreateMessageMutationVariables>;
+export const MessageAddedDocument = gql`
+    subscription messageAdded($username: ID!) {
+  messageAdded(username: $username) {
+    body
+  }
+}
+    `;
+
+/**
+ * __useMessageAddedSubscription__
+ *
+ * To run a query within a React component, call `useMessageAddedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useMessageAddedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMessageAddedSubscription({
+ *   variables: {
+ *      username: // value for 'username'
+ *   },
+ * });
+ */
+export function useMessageAddedSubscription(baseOptions: Apollo.SubscriptionHookOptions<MessageAddedSubscription, MessageAddedSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<MessageAddedSubscription, MessageAddedSubscriptionVariables>(MessageAddedDocument, options);
+      }
+export type MessageAddedSubscriptionHookResult = ReturnType<typeof useMessageAddedSubscription>;
+export type MessageAddedSubscriptionResult = Apollo.SubscriptionResult<MessageAddedSubscription>;

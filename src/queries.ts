@@ -21,22 +21,36 @@ gql`
 `;
 
 gql`
-  mutation createUser($username: ID!, $first_name: String!, $last_name: String!) {
-    createUser(username: $username, first_name: $first_name, last_name: $last_name) {
+  mutation createUser(
+    $username: ID!
+    $first_name: String!
+    $last_name: String!
+  ) {
+    createUser(
+      username: $username
+      first_name: $first_name
+      last_name: $last_name
+    ) {
       username
       first_name
       last_name
     }
-  }`;
+  }
+`;
 
-
-
-gql`  mutation createMessage($username: ID!, $body:String!) {
-
-  createMessage(username: $username, body: $body) {
-    body
-    user {
-      username
+gql`
+  mutation createMessage($username: ID!, $body: String!) {
+    createMessage(username: $username, body: $body) {
+      body
+      id
     }
   }
-}`
+`;
+
+gql`
+  subscription messageAdded($username: ID!) {
+    messageAdded(username: $username) {
+      body
+    }
+  }
+`;
