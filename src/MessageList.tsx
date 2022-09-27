@@ -2,6 +2,8 @@ import {
   useGetUserMessagesQuery,
   useMessageAddedSubscription,
   useCreateMessageMutation,
+  GetUserMessagesQuery,
+  Message,
 } from "./graphql/generated";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
@@ -13,8 +15,16 @@ function MessageList() {
     body: "",
   });
 
+  const [messages, setMessages] = useState<Message[] | null>(null);
+
   const { loading, error, data } = useGetUserMessagesQuery({
     variables: { username: username as string },
+    onCompleted: (data) => {
+      const results = data?.user?.messages as Message[];
+      console.log(data);
+
+      setMessages(results);
+    },
   });
 
   const [
@@ -22,11 +32,11 @@ function MessageList() {
     { loading: messageLoading, error: messageError, data: messageData },
   ] = useCreateMessageMutation();
 
-  const { data: subscription } = useMessageAddedSubscription({
-    variables: {
-      username: username as string,
-    },
-  });
+  // const { data: subscription } = useMessageAddedSubscription({
+  //   variables: {
+  //     username: username as string,
+  //   },
+  // });
 
   /** Update local state w/curr state of input elem */
   function handleChange(evt: { target: { name: string; value: string } }) {
@@ -39,11 +49,17 @@ function MessageList() {
 
   async function addMessage(evt: React.SyntheticEvent<HTMLFormElement>) {
     evt.preventDefault();
-    const data = await createMessageMutation({
+    await createMessageMutation({
       variables: { username: username as string, body: formData.body },
+      onCompleted: (data) => {
+        const result = data.createMessage as Message;
+        console.log(data);
+        if (messages) {
+          setMessages(() => [...messages, result]);
+        }
+      },
     });
 
-    console.log(data);
     setFormData({
       body: "",
     });
@@ -56,6 +72,7 @@ function MessageList() {
   return (
     <div>
       <h2>{username} Messages</h2>
+      {JSON.stringify(messages)}
       <form onSubmit={addMessage}>
         <label htmlFor="body">Add Message</label>
         <textarea
@@ -66,10 +83,8 @@ function MessageList() {
         ></textarea>
         <button>Add Message</button>
       </form>
-      {data &&
-        data.user?.messages?.map((message) => (
-          <p key={uuidv4()}>{message.body}</p>
-        ))}
+      {messages &&
+        messages.map((message) => <p key={uuidv4()}>{message.body}</p>)}
     </div>
   );
 }
